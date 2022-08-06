@@ -12,7 +12,7 @@ const mode = isDevelopment ? 'development' : 'production';
 
 // Bundle config options
 const BUNDLE = {
-  entry: './index.ts',
+  entry: './src/index.ts',
   output: {
     filename: 'app.js',
     path: path.resolve(__dirname, 'dist')
