@@ -1,43 +1,55 @@
-const esbuild = require("esbuild");
-
+"use strict";
+import esbuild from "esbuild";
+import nodemon from "nodemon";
+import { parseArgs } from "util";
 const buildConfig = {
   entryPoints: ["src/index.ts"],
   outdir: "dist",
   bundle: true,
   platform: "node",
   target: "esnext",
-  loader: { ".ts": "ts" },
+  loader: { ".ts": "ts" }
 };
-
-function getArgs() {
-  const args = {};
-  process.argv.forEach((arg, index) => {
-    if (arg.slice(0, 2) === "--") {
-      const longArg = arg.split("=");
-      const longArgFlag = longArg[0].slice(2, longArg[0].length);
-      const longArgValue = longArg.length > 1 ? longArg[1] : true;
-      args[longArgFlag] = longArgValue;
-    } else if (arg[0] === "-") {
-      const flag = arg.split("-")[1];
-      args[flag] = true;
+const { values: args } = parseArgs({
+  options: {
+    watch: {
+      type: "boolean",
+      short: "w"
+    },
+    dev: {
+      type: "boolean",
+      short: "d"
     }
-  });
-  return args;
-}
-const args = getArgs();
-if (args.watch) {
-  esbuild
-    .context(buildConfig)
-    .then((ctx) => {
-      console.log("⚡⚡⚡⚡⚡ Build Done! ⚡⚡⚡⚡⚡");
-
-      console.log("========Watch Mode Enabled========");
-      ctx.watch();
-    })
-    .catch(console.error);
-} else {
-  esbuild
-    .build(buildConfig)
-    .then(() => console.log("⚡⚡⚡⚡⚡ Build Done! ⚡⚡⚡⚡⚡"))
-    .catch(console.error);
-}
+  }
+});
+const buildFn = async () => await esbuild.build(buildConfig).then(() => console.log("======== \u26A1 Build Done! ========")).catch(console.error);
+const watchFn = async () => {
+  const ctx = await esbuild.context(buildConfig);
+  await ctx.watch();
+  console.log("======== \u{1F440} Watch Mode Enabled ========");
+};
+const execute = async () => {
+  if (args.watch || args.dev) {
+    await watchFn();
+  } else {
+    await buildFn();
+  }
+  ;
+  if (args.dev) {
+    nodemon({
+      script: "dist/index.js",
+      ext: "js",
+      runOnChangeOnly: true
+      // prevent run twice if script file not exist
+    });
+    nodemon.on("start", () => {
+      console.log("======== \u{1F6A6} Nodemon started ========");
+    }).on("quit", () => {
+      console.log("======== \u{1F44B} Nodemon quit ========");
+      process.exit();
+    }).on("restart", (files) => {
+      console.log("======== \u{1F528} Nodemon Restarted ========");
+    });
+  }
+};
+await execute();
