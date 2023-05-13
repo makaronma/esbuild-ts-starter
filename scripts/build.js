@@ -1,5 +1,13 @@
-const { build } = require('esbuild')
-// const { dependencies } = require('../package.json')
+const esbuild = require("esbuild");
+
+const buildConfig = {
+  entryPoints: ["src/index.ts"],
+  outdir: "dist",
+  bundle: true,
+  platform: "node",
+  target: "esnext",
+  loader: { ".ts": "ts" },
+};
 
 function getArgs() {
   const args = {};
@@ -17,17 +25,19 @@ function getArgs() {
   return args;
 }
 const args = getArgs();
+if (args.watch) {
+  esbuild
+    .context(buildConfig)
+    .then((ctx) => {
+      console.log("⚡⚡⚡⚡⚡ Build Done! ⚡⚡⚡⚡⚡");
 
-build({
-  entryPoints: ["src/index.ts"],
-  outdir: "dist",
-  bundle: true,
-  platform: "node",
-  target: "esnext",
-  // external: ['@babel/core', '@babel/types'].concat(Object.keys(dependencies)),
-
-  loader: { ".ts": "ts" },
-  watch: args.watch,
-})
-  .then(() => console.log("⚡⚡⚡⚡⚡ Build Done! ⚡⚡⚡⚡⚡"))
-  .catch(() => process.exit(1));
+      console.log("========Watch Mode Enabled========");
+      ctx.watch();
+    })
+    .catch(console.error);
+} else {
+  esbuild
+    .build(buildConfig)
+    .then(() => console.log("⚡⚡⚡⚡⚡ Build Done! ⚡⚡⚡⚡⚡"))
+    .catch(console.error);
+}
