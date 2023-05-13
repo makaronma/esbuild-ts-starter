@@ -5,7 +5,7 @@
   "type": "module",
   "module": "node18",
   "scripts": {
-    "prepare": "pnpm script:build",
+    "prepare": "pnpm script:build && pnpm build",
     "start": "node ./dist",
     "build": "node scripts/build.js",
     "build:watch": "node scripts/build.js -w",
