@@ -2,18 +2,16 @@
   "name": "esbuild-ts-starter",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
-  "module": "node18",
   "scripts": {
     "prepare": "pnpm script:build && pnpm build",
     "start": "node ./dist",
-    "build": "node scripts/build.js",
-    "build:watch": "node scripts/build.js -w",
-    "dev": "node scripts/build.js -d",
+    "build": "node scripts/build.mjs",
+    "build:watch": "node scripts/build.mjs -w",
+    "dev": "node scripts/build.mjs -d",
     "test": "jest",
     "test:watch": "jest --watch",
     "clean": "rimraf dist coverage",
-    "script:build": "esbuild --outdir=scripts --target=node18 scripts/*.ts"
+    "script:build": "esbuild scripts/*.mts --outdir=scripts --target=node18 --supported:top-level-await=true --out-extension:.js=.mjs"
   },
   "dependencies": {
     "lodash": "^4.17.21",

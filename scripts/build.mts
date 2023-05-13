@@ -6,8 +6,10 @@ const buildConfig: BuildOptions = {
   entryPoints: ["src/index.ts"],
   outdir: "dist",
   bundle: true,
+  format: "cjs",
   platform: "node",
   target: "esnext",
+  tsconfig: "tsconfig.json",
   loader: { ".ts": "ts" },
 };
 
