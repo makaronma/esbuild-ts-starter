@@ -1,6 +1,8 @@
 import esbuild, { BuildOptions } from "esbuild";
 import nodemon from "nodemon";
 import { parseArgs } from "util";
+import { nodeExternalsPlugin } from "esbuild-node-externals";
+
 
 const buildConfig: BuildOptions = {
   entryPoints: ["src/index.ts"],
@@ -11,6 +13,7 @@ const buildConfig: BuildOptions = {
   target: "esnext",
   tsconfig: "tsconfig.json",
   loader: { ".ts": "ts" },
+  plugins: [nodeExternalsPlugin()],
 };
 
 const { values: args } = parseArgs({
