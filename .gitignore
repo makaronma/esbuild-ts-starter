@@ -131,3 +131,4 @@ dist
 
 scripts/*.js
 scripts/*.mjs
+.wireit
